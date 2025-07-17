@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .tree-container {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      font-family: sans-serif;
+    }
+
+    .tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .node {
+      border: 2px solid #000;
+      padding: 6px 12px;
+      margin: 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      background-color: #f9f9f9;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    /* Composite nodes = boxes (rounded rect) */
+    .node.composite {
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    /* Prime nodes = circles */
+    .node.prime {
+      border-radius: 50%;
+      padding: 6px 14px; /* wider for circle */
+      background-color: #e0f7e0;
+      min-width: 40px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Input inside node */
+    .node input {
+      width: 30px;
+      text-align: center;
+      font-weight: bold;
+      border: none;
+      border-bottom: 2px solid #333;
+      outline: none;
+      background: transparent;
+    }
+
+    .connector {
+      width: 2px;
+      height: 20px;
+      background-color: black;
+    }
+
+    .branch {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="tree-container">
+
+    <!-- Tree 1: 30 -->
+    <div class="tree">
+      <div class="node composite">30</div>
+      <div class="connector"></div>
+      <div class="branch">
+        <div class="tree">
+          <div class="node prime">5</div> <!-- prefilled prime 5 -->
+        </div>
+        <div class="tree">
+          <div class="node composite"><input type="text" id="t1-node1" maxlength="2"></div> <!-- input node1 -->
+          <div class="connector"></div>
+          <div class="branch">
+            <div class="node prime"><input type="text" id="t1-leaf1" maxlength="2"></div> <!-- leaf1 -->
+            <div class="node prime"><input type="text" id="t1-leaf2" maxlength="2"></div> <!-- leaf2 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tree 2: 90 -->
+    <div class="tree">
+      <div class="node composite">90</div>
+      <div class="connector"></div>
+      <div class="branch">
+        <div class="tree">
+          <div class="node composite">10</div> <!-- prefilled composite 10 -->
+          <div class="connector"></div>
+          <div class="branch">
+            <div class="node prime"><input type="text" id="t2-leaf1-left" maxlength="2"></div> <!-- leaf1 under 10 -->
+            <div class="node prime"><input type="text" id="t2-leaf2-left" maxlength="2"></div> <!-- leaf2 under 10 -->
+          </div>
+        </div>
+        <div class="tree">
+          <div class="node composite"><input type="text" id="t2-node1" maxlength="2"></div> <!-- right node input -->
+          <div class="connector"></div>
+          <div class="branch">
+            <div class="node prime"><input type="text" id="t2-leaf1" maxlength="2"></div> <!-- right leaf1 -->
+            <div class="node prime"><input type="text" id="t2-leaf2" maxlength="2"></div> <!-- right leaf2 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getTreeValues() {
+      const values = {
+        tree1: {
+          node1: document.getElementById("t1-node1").value.trim(),
+          leaf1: document.getElementById("t1-leaf1").value.trim(),
+          leaf2: document.getElementById("t1-leaf2").value.trim(),
+        },
+        tree2: {
+          node1: document.getElementById("t2-node1").value.trim(),
+          leaf1_left: document.getElementById("t2-leaf1-left").value.trim(),
+          leaf2_left: document.getElementById("t2-leaf2-left").value.trim(),
+          leaf1: document.getElementById("t2-leaf1").value.trim(),
+          leaf2: document.getElementById("t2-leaf2").value.trim(),
+        }
+      };
+
+      window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: "streamlit:setComponentValue",
+        value: values
+      }, "*");
+    }
+
+    document.querySelectorAll("input").forEach(input => {
+      input.addEventListener("input", getTreeValues);
+    });
+
+    function sendMessage(type, data = {}) {
+      window.parent.postMessage({ isStreamlitMessage: true, type, ...data }, '*');
+    }
+
+    window.addEventListener('message', event => {
+      if (event.data.type === 'streamlit:render') {
+        sendMessage('streamlit:setFrameHeight', { height: document.documentElement.scrollHeight });
+      }
+    });
+
+    sendMessage('streamlit:componentReady', { apiVersion: 1 });
+    sendMessage('streamlit:setFrameHeight', { height: document.documentElement.scrollHeight });
+  </script>
+</body>
+</html>
