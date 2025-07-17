@@ -29,11 +29,11 @@ board = sudoku(default=puzzle)
 # ==== Part II: Counting Combinations I (3pts) ====
 st.header("Part II: Counting Combinations I (3pts)")
 st.write("**Instruction:** Given the colors below, make the possible combinations and answer the following questions. Then circle the correct answer to the question below.")
-st.image("rby.png")
+st.image("ryg.png")
 # Question 2 - Placeholder
 st.write("**2. Color the following tower of blocks of the possible combinations you can make based on the statement above.**")
 
-colors = ["", "Red", "Blue", "Yellow"]
+colors = ["", "Red", "Yellow", "Green"]
 tower_inputs = {}
 
 # Display 6 towers side by side
@@ -54,13 +54,13 @@ questions_3_7 = {
     4: ("If there is a restriction that you cannot put the red block at the top, how many towers can you make?", 
         ["a. 2", "b. 4", "c. 6", "d. 8"], 
         answers["q4"]),
-    5: ("If there is a restriction that you cannot put the red block and blue block at the top, how many towers can you make?", 
+    5: ("If there is a restriction that you cannot put the red block and yellow block at the top, how many towers can you make?", 
         ["a. 2", "b. 4", "c. 6", "d. 8"], 
         answers["q5"]),
-    6: ("If there is a restriction that you cannot put the yellow block at the bottom, how many towers can you make?", 
+    6: ("If there is a restriction that you cannot put the green block at the bottom, how many towers can you make?", 
         ["a. 2", "b. 4", "c. 6", "d. 8"], 
         answers["q6"]),
-    7: ("If there is a restriction that you cannot put the blue or yellow in the middle, how many towers can you make?", 
+    7: ("If there is a restriction that you cannot put the yellow or green block in the middle, how many towers can you make?", 
         ["a. 2", "b. 4", "c. 6", "d. 8"], 
         answers["q7"]),
 }
@@ -138,7 +138,7 @@ for qnum in questions_13_17:
 st.header("Part III: Problem Solving - Finding the LCM (3pts)")
 
 lcm_questions = {
-    18: "Find the Least Common Multiple of 5, 7 using the listing method.",
+    18: "Find the Least Common Multiple of 4, 7 using the listing method.",
 }
 for qnum, qtext in lcm_questions.items():
     st.text_input(f"**{qnum}. {qtext}**", key=f"lcm{qnum}")
@@ -173,7 +173,7 @@ def grade_blocks():
             correct += 0.5
 
     # Grading Q2 (tower permutations)
-    valid_towers = list(permutations(['Red', 'Blue', 'Yellow']))
+    valid_towers = list(permutations(['Red', 'Yellow', 'Green']))
     student_towers = []
 
     for i in range(6):
@@ -182,7 +182,7 @@ def grade_blocks():
             st.session_state.get(f"tower{i}_block1", ""),
             st.session_state.get(f"tower{i}_block2", "")
         ]
-        if all(c in ("Red", "Blue", "Yellow") for c in t) and len(set(t)) == 3:
+        if all(c in ("Red", "Yellow", "Green") for c in t) and len(set(t)) == 3:
             student_towers.append(tuple(t))
 
     # Count unique valid permutations
